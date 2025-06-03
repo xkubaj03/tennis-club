@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://prod_tennis_db:5432/tennisclub
+    username: tennis_admin
+    password: strong33password
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+spring.h2.console.enabled: false
+
+springdoc:
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    org.hibernate.SQL: WARN
