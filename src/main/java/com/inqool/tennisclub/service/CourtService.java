@@ -67,6 +67,12 @@ public class CourtService {
                 .orElseThrow(() -> new EntityNotFoundException("Court with id " + id + " not found")));
     }
 
+    public Optional<CourtEntity> findByCourtNumber(Integer number) {
+        return Optional.ofNullable(courtRepository
+                .findByCourtNumber(number)
+                .orElseThrow(() -> new EntityNotFoundException("Court with number " + number + " not found")));
+    }
+
     public List<CourtEntity> findAll() {
         return courtRepository.findAll();
     }

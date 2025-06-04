@@ -35,11 +35,11 @@ public class CourtSurfaceFacade {
     }
 
     public CourtSurfaceDto update(Long id, CreateCourtSurfaceDto dto) {
-        CourtSurfaceEntity CourtSurfaceEntity = courtSurfaceMapper.toEntity(dto);
+        CourtSurfaceEntity courtSurfaceEntity = courtSurfaceMapper.toEntity(dto);
 
-        CourtSurfaceEntity.setId(id);
+        courtSurfaceEntity.setId(id);
 
-        CourtSurfaceEntity saved = courtSurfaceService.update(CourtSurfaceEntity);
+        CourtSurfaceEntity saved = courtSurfaceService.update(courtSurfaceEntity);
         return courtSurfaceMapper.toDto(saved);
     }
 
