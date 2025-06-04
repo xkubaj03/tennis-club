@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleIntegrityViolationException(DataIntegrityViolationException ex) {
         Map<String, Object> body = new HashMap<>();
         body.put("error", "Integrity Violation");

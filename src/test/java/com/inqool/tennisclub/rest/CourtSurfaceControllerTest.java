@@ -1,6 +1,7 @@
 package com.inqool.tennisclub.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -8,10 +9,10 @@ import static org.mockito.Mockito.when;
 
 import com.inqool.tennisclub.api.CourtSurfaceDto;
 import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
+import com.inqool.tennisclub.exceptions.EntityNotFoundException;
 import com.inqool.tennisclub.facade.CourtSurfaceFacade;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -58,24 +59,22 @@ public class CourtSurfaceControllerTest {
     void findById_existingId_returnsCourtSurface() {
         Long id = 1L;
         CourtSurfaceDto expectedDto = new CourtSurfaceDto(1L, "Clay", "Dark clay", BigDecimal.valueOf(0.1));
-        when(courtSurfaceFacade.findById(id)).thenReturn(Optional.of(expectedDto));
+
+        when(courtSurfaceFacade.findById(id)).thenReturn(expectedDto);
 
         ResponseEntity<CourtSurfaceDto> response = courtSurfaceRestController.findById(id);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(expectedDto);
-        verify(courtSurfaceFacade, times(1)).findById(id);
     }
 
     @Test
-    void findById_nonExistingId_returnsNotFound() {
+    void findById_nonExistingId_throwsException() {
         Long id = 99L;
-        when(courtSurfaceFacade.findById(id)).thenReturn(Optional.empty());
+        when(courtSurfaceFacade.findById(id))
+                .thenThrow(new EntityNotFoundException("CourtSurface with id " + id + " not found"));
 
-        ResponseEntity<CourtSurfaceDto> response = courtSurfaceRestController.findById(id);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        verify(courtSurfaceFacade, times(1)).findById(id);
+        assertThrows(EntityNotFoundException.class, () -> courtSurfaceRestController.findById(id));
     }
 
     @Test

@@ -74,9 +74,9 @@ public class CourtSurfaceServiceTest {
         Long id = 1L;
         when(courtSurfaceRepository.findById(id)).thenReturn(Optional.of(testEntity));
 
-        Optional<CourtSurfaceEntity> result = courtSurfaceService.findById(id);
+        CourtSurfaceEntity result = courtSurfaceService.findById(id);
 
-        assertThat(result).isPresent().contains(testEntity);
+        assertThat(result).isEqualTo(testEntity);
         verify(courtSurfaceRepository, times(1)).findById(id);
     }
 
@@ -156,25 +156,25 @@ public class CourtSurfaceServiceTest {
     @Test
     void deleteById_existingId_deletesEntity() {
         Long id = 1L;
-        when(courtSurfaceRepository.findById(id)).thenReturn(Optional.of(testEntity));
+        when(courtSurfaceRepository.existsById(id)).thenReturn(true);
         doNothing().when(courtSurfaceRepository).deleteById(id);
 
         courtSurfaceService.deleteById(id);
 
-        verify(courtSurfaceRepository, times(1)).findById(id);
+        verify(courtSurfaceRepository, times(1)).existsById(id);
         verify(courtSurfaceRepository, times(1)).deleteById(id);
     }
 
     @Test
     void deleteById_nonExistingId_throwsEntityNotFoundException() {
         Long id = 99L;
-        when(courtSurfaceRepository.findById(id)).thenReturn(Optional.empty());
+        when(courtSurfaceRepository.existsById(id)).thenReturn(false);
 
         assertThatThrownBy(() -> courtSurfaceService.deleteById(id))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("CourtSurface with id " + id + " not found");
 
-        verify(courtSurfaceRepository, times(1)).findById(id);
+        verify(courtSurfaceRepository, times(1)).existsById(id);
         verify(courtSurfaceRepository, never()).deleteById(any());
     }
 

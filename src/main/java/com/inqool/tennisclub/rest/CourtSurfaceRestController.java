@@ -51,10 +51,7 @@ public class CourtSurfaceRestController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<CourtSurfaceDto> findById(@PathVariable Long id) {
-        return courtSurfaceFacade
-                .findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(courtSurfaceFacade.findById(id));
     }
 
     @Operation(summary = "Update a CourtSurface")

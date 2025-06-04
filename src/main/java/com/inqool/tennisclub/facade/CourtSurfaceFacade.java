@@ -6,7 +6,6 @@ import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import com.inqool.tennisclub.mappers.CourtSurfaceMapper;
 import com.inqool.tennisclub.service.CourtSurfaceService;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,8 +25,8 @@ public class CourtSurfaceFacade {
         return courtSurfaceMapper.toDto(saved);
     }
 
-    public Optional<CourtSurfaceDto> findById(Long id) {
-        return courtSurfaceService.findById(id).map(courtSurfaceMapper::toDto);
+    public CourtSurfaceDto findById(Long id) {
+        return courtSurfaceMapper.toDto(courtSurfaceService.findById(id));
     }
 
     public List<CourtSurfaceDto> findAll() {
