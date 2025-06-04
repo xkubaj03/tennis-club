@@ -7,7 +7,6 @@ import com.inqool.tennisclub.mappers.CourtMapper;
 import com.inqool.tennisclub.service.CourtService;
 import com.inqool.tennisclub.service.CourtSurfaceService;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,8 +28,8 @@ public class CourtFacade {
         return courtMapper.toDto(saved);
     }
 
-    public Optional<CourtDto> findById(Long id) {
-        return courtService.findById(id).map(courtMapper::toDto);
+    public CourtDto findById(Long id) {
+        return courtMapper.toDto(courtService.findById(id));
     }
 
     public List<CourtDto> findAll() {

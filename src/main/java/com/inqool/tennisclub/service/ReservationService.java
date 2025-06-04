@@ -8,11 +8,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -34,24 +35,28 @@ public class ReservationService {
         return reservationRepository.save(entity);
     }
 
-    public Optional<ReservationEntity> findById(Long id) {
-        return Optional.ofNullable(reservationRepository
+    @Transactional(readOnly = true)
+    public ReservationEntity findById(Long id) {
+        return reservationRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + id + " not found")));
+                .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationEntity> findByCourtNumber(Integer number) {
         return reservationRepository.findByCourtNumberOrderByCreatedAt(number);
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationEntity> findByPhoneNumber(String phone, boolean futureOnly) {
         if (futureOnly) {
-            return reservationRepository.findByCustomerPhoneNumber(phone);
+            return reservationRepository.findFutureReservationsByCustomerPhoneNumber(phone);
         }
 
-        return reservationRepository.findFutureReservationsByCustomerPhoneNumber(phone);
+        return reservationRepository.findByCustomerPhoneNumber(phone);
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationEntity> findAll() {
         return reservationRepository.findAll();
     }

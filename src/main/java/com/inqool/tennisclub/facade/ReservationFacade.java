@@ -9,7 +9,6 @@ import com.inqool.tennisclub.service.CustomerService;
 import com.inqool.tennisclub.service.ReservationService;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,8 +37,8 @@ public class ReservationFacade {
         return reservationMapper.toDto(saved, reservationService);
     }
 
-    public Optional<ReservationDto> findById(Long id) {
-        return reservationService.findById(id).map(entity -> reservationMapper.toDto(entity, reservationService));
+    public ReservationDto findById(Long id) {
+        return reservationMapper.toDto(reservationService.findById(id), reservationService);
     }
 
     public List<ReservationDto> findByCourt(Integer number) {

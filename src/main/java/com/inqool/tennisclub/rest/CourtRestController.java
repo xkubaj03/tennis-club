@@ -51,10 +51,7 @@ public class CourtRestController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<CourtDto> findById(@PathVariable Long id) {
-        return courtFacade
-                .findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(courtFacade.findById(id));
     }
 
     @Operation(summary = "Update a court")

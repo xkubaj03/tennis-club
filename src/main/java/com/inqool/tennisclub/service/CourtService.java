@@ -4,11 +4,12 @@ import com.inqool.tennisclub.data.model.CourtEntity;
 import com.inqool.tennisclub.data.repository.CourtRepository;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CourtService {
 
     private final CourtRepository courtRepository;
@@ -22,18 +23,21 @@ public class CourtService {
         return courtRepository.save(court);
     }
 
-    public Optional<CourtEntity> findById(Long id) {
-        return Optional.ofNullable(courtRepository
+    @Transactional(readOnly = true)
+    public CourtEntity findById(Long id) {
+        return courtRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Court with id " + id + " not found")));
+                .orElseThrow(() -> new EntityNotFoundException("Court with id " + id + " not found"));
     }
 
-    public Optional<CourtEntity> findByCourtNumber(Integer number) {
-        return Optional.ofNullable(courtRepository
+    @Transactional(readOnly = true)
+    public CourtEntity findByCourtNumber(Integer number) {
+        return courtRepository
                 .findByCourtNumber(number)
-                .orElseThrow(() -> new EntityNotFoundException("Court with number " + number + " not found")));
+                .orElseThrow(() -> new EntityNotFoundException("Court with number " + number + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<CourtEntity> findAll() {
         return courtRepository.findAll();
     }
@@ -47,9 +51,9 @@ public class CourtService {
     }
 
     public void deleteById(Long id) {
-        courtRepository
-                .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Court with id " + id + " not found"));
+        if (!courtRepository.existsById(id)) {
+            throw new EntityNotFoundException("Court with id " + id + " not found");
+        }
 
         courtRepository.deleteById(id);
     }

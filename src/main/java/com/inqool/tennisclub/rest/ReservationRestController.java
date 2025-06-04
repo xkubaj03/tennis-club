@@ -51,10 +51,7 @@ public class ReservationRestController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDto> findById(@PathVariable Long id) {
-        return reservationFacade
-                .findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(reservationFacade.findById(id));
     }
 
     @Operation(summary = "Get a Reservations by court number")

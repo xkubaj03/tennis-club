@@ -37,7 +37,7 @@ public interface ReservationMapper {
 
     @Named("findCourt")
     default CourtEntity findCourt(Integer courtNumber, @Context CourtService courtService) {
-        return courtService.findByCourtNumber(courtNumber).orElseThrow();
+        return courtService.findByCourtNumber(courtNumber);
     }
 
     @Mapping(target = "courtId", source = "court.id")
