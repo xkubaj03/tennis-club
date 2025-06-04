@@ -9,7 +9,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CourtMapper {
-    // @Mapping(target = "surfaceId", ignore = true)
+
+    @Mapping(target = "surfaceId", source = "courtSurface.id")
     CourtDto toDto(CourtEntity entity);
 
     List<CourtDto> toDtoList(List<CourtEntity> entities);
@@ -18,5 +19,6 @@ public interface CourtMapper {
     @Mapping(target = "reservations", ignore = true)
     @Mapping(target = "courtSurface", ignore = true)
     @Mapping(target = "active", ignore = true)
+    @Mapping(target = "courtSurface.id", source = "surfaceId")
     CourtEntity toEntity(CreateCourtDto dto);
 }

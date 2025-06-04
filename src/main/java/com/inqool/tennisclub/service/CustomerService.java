@@ -28,6 +28,12 @@ public class CustomerService {
                 .orElseGet(() -> customerRepository.save(entity));
     }
 
+    //    public CustomerEntity createIfNotExist2(String phoneNumber) {
+    //        return customerRepository
+    //            .findByPhoneNumber(entity.getPhoneNumber())
+    //            .orElseGet(() -> customerRepository.save(entity));
+    //    }
+
     public Optional<CustomerEntity> findById(Long id) {
         return Optional.ofNullable(customerRepository
                 .findById(id)
