@@ -2,51 +2,55 @@ package com.inqool.tennisclub.mappers;
 
 import com.inqool.tennisclub.api.CreateReservationDto;
 import com.inqool.tennisclub.api.ReservationDto;
+import com.inqool.tennisclub.data.model.CourtEntity;
+import com.inqool.tennisclub.data.model.CustomerEntity;
 import com.inqool.tennisclub.data.model.ReservationEntity;
+import com.inqool.tennisclub.service.CourtService;
+import com.inqool.tennisclub.service.CustomerService;
+import com.inqool.tennisclub.service.ReservationService;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
-@Component
-public class ReservationMapper {
+@Mapper(
+        componentModel = "spring",
+        uses = {CustomerService.class, CourtService.class})
+public interface ReservationMapper {
 
-    private final CustomerMapper customerMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "customer", source = ".", qualifiedByName = "findOrCreateCustomer")
+    @Mapping(target = "court", source = "courtNumber", qualifiedByName = "findCourt")
+    ReservationEntity toReservationEntity(
+            CreateReservationDto dto, @Context CustomerService customerService, @Context CourtService courtService);
 
-    @Autowired
-    public ReservationMapper(CustomerMapper customerMapper) {
-        this.customerMapper = customerMapper;
+    @Named("findOrCreateCustomer")
+    default CustomerEntity findOrCreateCustomer(CreateReservationDto dto, @Context CustomerService customerService) {
+        CustomerEntity customer = new CustomerEntity();
+        customer.setFirstName(dto.getCustomerName());
+        customer.setPhoneNumber(dto.getPhoneNumber());
+
+        return customerService.createIfNotExist(customer);
     }
 
-    public ReservationDto toDto(ReservationEntity entity) {
-        ReservationDto dto = new ReservationDto();
-        dto.setId(entity.getId());
-        dto.setCourtId(entity.getCourt().getId());
-        dto.setPhoneNumber(entity.getCustomer().getPhoneNumber());
-        dto.setCustomerName(entity.getCustomer().getFirstName());
-        dto.setCourtNumber(entity.getCourt().getCourtNumber());
-        dto.setGameType(entity.getGameType());
-        dto.setStartTime(entity.getStartTime());
-        dto.setEndTime(entity.getEndTime());
-        // dto.setTotalPrice(entity.getTotalPrice()); // This will be set in facade
-        dto.setCreatedAt(entity.getCreatedAt());
-
-        return dto;
+    @Named("findCourt")
+    default CourtEntity findCourt(Integer courtNumber, @Context CourtService courtService) {
+        return courtService.findByCourtNumber(courtNumber).orElseThrow();
     }
 
-    public ReservationEntity toEntity(CreateReservationDto dto) {
-        ReservationEntity entity = new ReservationEntity();
+    @Mapping(target = "courtId", source = "court.id")
+    @Mapping(target = "courtNumber", source = "court.courtNumber")
+    @Mapping(target = "customerName", source = "customer.firstName")
+    @Mapping(target = "phoneNumber", source = "customer.phoneNumber")
+    @Mapping(target = "totalPrice", source = ".", qualifiedByName = "calculatePrice")
+    ReservationDto toDto(ReservationEntity entity, @Context ReservationService reservationService);
 
-        entity.setCustomer(customerMapper.toCustomerEntity(dto));
-        entity.setGameType(dto.getGameType());
-        // entity.setCourt(dto.getCourtNumber()); TODO + Valid?
-        entity.setStartTime(dto.getStartTime());
-        entity.setEndTime(dto.getEndTime());
-
-        return entity;
+    @Named("calculatePrice")
+    default BigDecimal calculatePrice(ReservationEntity entity, @Context ReservationService reservationService) {
+        return reservationService.calculateTotalPrice(entity);
     }
 
-    public List<ReservationDto> toDtoList(List<ReservationEntity> all) {
-        return all.stream().map(this::toDto).collect(Collectors.toList());
-    }
+    List<ReservationDto> toDtoList(List<ReservationEntity> entities, @Context ReservationService reservationService);
 }
