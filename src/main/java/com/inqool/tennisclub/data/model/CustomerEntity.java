@@ -23,7 +23,7 @@ public class CustomerEntity {
     private String firstName;
 
     @Column(name = "last_name")
-    private String lastName;
+    private String lastName; // TODO delete and rename firstname -> name
 
     @OneToMany(mappedBy = "customer")
     private List<ReservationEntity> reservations;
