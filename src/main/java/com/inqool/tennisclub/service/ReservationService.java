@@ -24,11 +24,8 @@ public class ReservationService {
     }
 
     public ReservationEntity create(ReservationEntity entity) {
-        boolean hasOverlap = !reservationRepository
-                .findOverlappingReservations(entity.getCourt().getId(), entity.getStartTime(), entity.getEndTime())
-                .isEmpty();
-
-        if (hasOverlap) {
+        if (!reservationRepository.isCourtAvailable(
+                entity.getCourt().getId(), entity.getStartTime(), entity.getEndTime())) {
             throw new ReservationAlreadyExist("Reservation for this court at this time already exists");
         }
 
