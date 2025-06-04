@@ -1,9 +1,9 @@
 package com.inqool.tennisclub.service;
 
 import com.inqool.tennisclub.data.model.ReservationEntity;
-import com.inqool.tennisclub.data.repository.CustomerRepository;
 import com.inqool.tennisclub.data.repository.ReservationRepository;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;
+import com.inqool.tennisclub.exceptions.ReservationAlreadyExist;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
@@ -15,18 +15,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReservationService {
 
-    private final CustomerRepository customerRepository;
-
     private final ReservationRepository reservationRepository;
 
     @Autowired
-    public ReservationService(CustomerRepository customerRepository, ReservationRepository reservationRepository) {
-        // TODO check for collision
-        this.customerRepository = customerRepository;
+    public ReservationService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
 
     public ReservationEntity create(ReservationEntity entity) {
+        boolean hasOverlap = !reservationRepository
+                .findOverlappingReservations(entity.getCourt().getId(), entity.getStartTime(), entity.getEndTime())
+                .isEmpty();
+
+        if (hasOverlap) {
+            throw new ReservationAlreadyExist("Reservation for this court at this time already exists");
+        }
+
         return reservationRepository.save(entity);
     }
 
@@ -34,6 +38,18 @@ public class ReservationService {
         return Optional.ofNullable(reservationRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + id + " not found")));
+    }
+
+    public List<ReservationEntity> findByCourtNumber(Integer number) {
+        return reservationRepository.findByCourtNumberOrderByCreatedAt(number);
+    }
+
+    public List<ReservationEntity> findByPhoneNumber(String phone, boolean futureOnly) {
+        if (futureOnly) {
+            return reservationRepository.findByCustomerPhoneNumber(phone);
+        }
+
+        return reservationRepository.findFutureReservationsByCustomerPhoneNumber(phone);
     }
 
     public List<ReservationEntity> findAll() {

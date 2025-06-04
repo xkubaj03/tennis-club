@@ -50,11 +50,11 @@ public class ReservationFacade {
     }
 
     public List<ReservationDto> findByCourt(Integer number) {
-        return reservationMapper.toDtoList(reservationService.findAll()); // TODO fix
+        return reservationMapper.toDtoList(reservationService.findByCourtNumber(number)); // TODO fix
     }
 
     public List<ReservationDto> findByPhone(String phone, boolean futureOnly) {
-        return reservationMapper.toDtoList(reservationService.findAll()); // TODO fix
+        return reservationMapper.toDtoList(reservationService.findByPhoneNumber(phone, futureOnly)); // TODO fix
     }
 
     public ReservationDto update(Long id, CreateReservationDto createReservationDto) {

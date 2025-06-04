@@ -20,6 +20,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    @ExceptionHandler(ReservationAlreadyExist.class)
+    public ResponseEntity<Object> handleReservationAlreadyExists(ReservationAlreadyExist ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Reservation Already Exists");
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationError(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new HashMap<>();
