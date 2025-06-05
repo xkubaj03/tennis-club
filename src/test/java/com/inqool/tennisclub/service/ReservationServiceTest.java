@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 import com.inqool.tennisclub.data.model.*;
+import com.inqool.tennisclub.data.model.enums.GameType;
 import com.inqool.tennisclub.data.repository.ReservationRepository;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;
 import com.inqool.tennisclub.exceptions.ReservationAlreadyExist;

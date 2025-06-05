@@ -3,6 +3,7 @@ package com.inqool.tennisclub.data.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.inqool.tennisclub.data.model.*;
+import com.inqool.tennisclub.data.model.enums.GameType;
 import com.inqool.tennisclub.data.repository.impl.CourtRepositoryImpl;
 import com.inqool.tennisclub.data.repository.impl.CourtSurfaceRepositoryImpl;
 import com.inqool.tennisclub.data.repository.impl.CustomerRepositoryImpl;

@@ -34,7 +34,7 @@ public class CourtRestController {
     @PostMapping
     public ResponseEntity<CourtDto> create(@RequestBody @Valid CreateCourtDto dto) {
         CourtDto created = courtFacade.create(dto);
-        return ResponseEntity.created(URI.create("/court/" + created.id())).body(created);
+        return ResponseEntity.created(URI.create("/court/" + created.getId())).body(created);
     }
 
     @Operation(summary = "Get all courts")

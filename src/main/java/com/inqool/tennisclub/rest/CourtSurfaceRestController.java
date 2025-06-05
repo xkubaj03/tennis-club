@@ -33,7 +33,7 @@ public class CourtSurfaceRestController {
     @PostMapping
     public ResponseEntity<CourtSurfaceDto> create(@RequestBody @Valid CreateCourtSurfaceDto dto) {
         CourtSurfaceDto created = courtSurfaceFacade.create(dto);
-        return ResponseEntity.created(URI.create("/courtsurface/" + created.id()))
+        return ResponseEntity.created(URI.create("/courtsurface/" + created.getId()))
                 .body(created);
     }
 

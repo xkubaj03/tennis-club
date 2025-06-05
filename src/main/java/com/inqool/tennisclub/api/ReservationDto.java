@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.api;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inqool.tennisclub.data.model.GameType;
+import com.inqool.tennisclub.data.model.enums.GameType;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;

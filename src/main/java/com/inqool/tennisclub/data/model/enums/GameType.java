@@ -1,4 +1,4 @@
-package com.inqool.tennisclub.data.model;
+package com.inqool.tennisclub.data.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.math.BigDecimal;

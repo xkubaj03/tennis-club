@@ -1,6 +1,6 @@
 package com.inqool.tennisclub.api;
 
-import com.inqool.tennisclub.data.model.GameType;
+import com.inqool.tennisclub.data.model.enums.GameType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;

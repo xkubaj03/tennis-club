@@ -1,3 +1,17 @@
 package com.inqool.tennisclub.api;
 
-public record CourtDto(Long id, Integer courtNumber, Long surfaceId) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CourtDto {
+
+    private Long id;
+
+    private Integer courtNumber;
+
+    private Long surfaceId;
+}
