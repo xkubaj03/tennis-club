@@ -54,8 +54,7 @@ public class ReservationFacadeTest {
         CustomerEntity customer = new CustomerEntity();
         customer.setId(1L);
         customer.setPhoneNumber("+420123456789");
-        customer.setFirstName("Jan");
-        customer.setLastName("Novák");
+        customer.setName("Jan Novák");
 
         CourtSurfaceEntity surface = new CourtSurfaceEntity();
         surface.setId(1L);
@@ -241,8 +240,7 @@ public class ReservationFacadeTest {
         CustomerEntity updatedCustomer = new CustomerEntity();
         updatedCustomer.setId(2L);
         updatedCustomer.setPhoneNumber("+420987654321");
-        updatedCustomer.setFirstName("Petr");
-        updatedCustomer.setLastName("Svoboda");
+        updatedCustomer.setName("Petr Svoboda");
 
         CourtEntity updatedCourt = new CourtEntity();
         updatedCourt.setId(2L);
@@ -299,8 +297,7 @@ public class ReservationFacadeTest {
         CustomerEntity secondCustomer = new CustomerEntity();
         secondCustomer.setId(2L);
         secondCustomer.setPhoneNumber("+420987654321");
-        secondCustomer.setFirstName("Petr");
-        secondCustomer.setLastName("Svoboda");
+        secondCustomer.setName("Petr Svoboda");
 
         CourtEntity secondCourt = new CourtEntity();
         secondCourt.setId(2L);

@@ -29,7 +29,7 @@ public interface ReservationMapper {
     @Named("findOrCreateCustomer")
     default CustomerEntity findOrCreateCustomer(CreateReservationDto dto, @Context CustomerService customerService) {
         CustomerEntity customer = new CustomerEntity();
-        customer.setFirstName(dto.getCustomerName());
+        customer.setName(dto.getCustomerName());
         customer.setPhoneNumber(dto.getPhoneNumber());
 
         return customerService.createIfNotExist(customer);
@@ -42,7 +42,7 @@ public interface ReservationMapper {
 
     @Mapping(target = "courtId", source = "court.id")
     @Mapping(target = "courtNumber", source = "court.courtNumber")
-    @Mapping(target = "customerName", source = "customer.firstName")
+    @Mapping(target = "customerName", source = "customer.name")
     @Mapping(target = "phoneNumber", source = "customer.phoneNumber")
     @Mapping(target = "totalPrice", source = ".", qualifiedByName = "calculatePrice")
     ReservationDto toDto(ReservationEntity entity, @Context ReservationService reservationService);

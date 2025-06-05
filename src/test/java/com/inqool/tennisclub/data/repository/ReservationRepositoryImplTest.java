@@ -60,8 +60,7 @@ public class ReservationRepositoryImplTest {
         courtRepositoryImpl.save(testCourt);
 
         testCustomer = new CustomerEntity();
-        testCustomer.setFirstName("John");
-        testCustomer.setLastName("Doe");
+        testCustomer.setName("John Doe");
         testCustomer.setPhoneNumber("123456789");
         testCustomer.setActive(true);
         customerRepositoryImpl.save(testCustomer);

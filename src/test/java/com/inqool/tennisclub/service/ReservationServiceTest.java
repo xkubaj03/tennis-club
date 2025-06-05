@@ -60,8 +60,7 @@ public class ReservationServiceTest {
         testCustomer = new CustomerEntity();
         testCustomer.setId(1L);
         testCustomer.setPhoneNumber("+420123456789");
-        testCustomer.setFirstName("John");
-        testCustomer.setLastName("Doe");
+        testCustomer.setName("John Doe");
         testCustomer.setActive(true);
 
         testReservation = new ReservationEntity();

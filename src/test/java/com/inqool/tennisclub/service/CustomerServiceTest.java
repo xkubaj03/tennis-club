@@ -33,15 +33,13 @@ public class CustomerServiceTest {
         testEntity = new CustomerEntity();
         testEntity.setId(1L);
         testEntity.setPhoneNumber("+420777123456");
-        testEntity.setFirstName("Jan");
-        testEntity.setLastName("Novák");
+        testEntity.setName("Jan Novák");
         testEntity.setActive(true);
 
         secondEntity = new CustomerEntity();
         secondEntity.setId(2L);
         secondEntity.setPhoneNumber("+420608987654");
-        secondEntity.setFirstName("Marie");
-        secondEntity.setLastName("Svobodová");
+        secondEntity.setName("Marie Svobodová");
         secondEntity.setActive(true);
     }
 
@@ -49,14 +47,12 @@ public class CustomerServiceTest {
     void create_validEntity_returnsCreatedEntity() {
         CustomerEntity newEntity = new CustomerEntity();
         newEntity.setPhoneNumber("+420775111222");
-        newEntity.setFirstName("Petr");
-        newEntity.setLastName("Dvořák");
+        newEntity.setName("Petr Dvořák");
 
         CustomerEntity savedEntity = new CustomerEntity();
         savedEntity.setId(3L);
         savedEntity.setPhoneNumber("+420775111222");
-        savedEntity.setFirstName("Petr");
-        savedEntity.setLastName("Dvořák");
+        savedEntity.setName("Petr Dvořák");
         savedEntity.setActive(true);
 
         when(customerRepository.save(newEntity)).thenReturn(savedEntity);
@@ -72,15 +68,14 @@ public class CustomerServiceTest {
     void createIfNotExist_existingCustomer_returnsExistingEntity() {
         CustomerEntity entityToCreate = new CustomerEntity();
         entityToCreate.setPhoneNumber("+420777123456");
-        entityToCreate.setFirstName("Different");
-        entityToCreate.setLastName("Name");
+        entityToCreate.setName("Different Name");
 
         when(customerRepository.findByPhoneNumber("+420777123456")).thenReturn(Optional.of(testEntity));
 
         CustomerEntity result = customerService.createIfNotExist(entityToCreate);
 
         assertThat(result).isEqualTo(testEntity);
-        assertThat(result.getFirstName()).isEqualTo("Jan");
+        assertThat(result.getName()).isEqualTo("Jan Novák");
         verify(customerRepository, times(1)).findByPhoneNumber("+420777123456");
         verify(customerRepository, never()).save(any());
     }
@@ -89,14 +84,12 @@ public class CustomerServiceTest {
     void createIfNotExist_nonExistingCustomer_createsNewEntity() {
         CustomerEntity entityToCreate = new CustomerEntity();
         entityToCreate.setPhoneNumber("+420775333444");
-        entityToCreate.setFirstName("New");
-        entityToCreate.setLastName("Customer");
+        entityToCreate.setName("New Customer");
 
         CustomerEntity savedEntity = new CustomerEntity();
         savedEntity.setId(4L);
         savedEntity.setPhoneNumber("+420775333444");
-        savedEntity.setFirstName("New");
-        savedEntity.setLastName("Customer");
+        savedEntity.setName("New Customer");
         savedEntity.setActive(true);
 
         when(customerRepository.findByPhoneNumber("+420775333444")).thenReturn(Optional.empty());
@@ -192,8 +185,7 @@ public class CustomerServiceTest {
         CustomerEntity entityToUpdate = new CustomerEntity();
         entityToUpdate.setId(1L);
         entityToUpdate.setPhoneNumber("+420777123456");
-        entityToUpdate.setFirstName("Updated Jan");
-        entityToUpdate.setLastName("Updated Novák");
+        entityToUpdate.setName("Updated Jan Novák");
         entityToUpdate.setActive(true);
 
         when(customerRepository.findById(1L)).thenReturn(Optional.of(testEntity));
@@ -202,8 +194,7 @@ public class CustomerServiceTest {
         CustomerEntity result = customerService.update(entityToUpdate);
 
         assertThat(result).isEqualTo(entityToUpdate);
-        assertThat(result.getFirstName()).isEqualTo("Updated Jan");
-        assertThat(result.getLastName()).isEqualTo("Updated Novák");
+        assertThat(result.getName()).isEqualTo("Updated Jan Novák");
         verify(customerRepository, times(1)).findById(1L);
         verify(customerRepository, times(1)).save(entityToUpdate);
     }
@@ -255,14 +246,12 @@ public class CustomerServiceTest {
     void create_entityWithNullValues_handlesGracefully() {
         CustomerEntity entityWithNulls = new CustomerEntity();
         entityWithNulls.setPhoneNumber("+420724555666");
-        entityWithNulls.setFirstName("Test");
-        entityWithNulls.setLastName(null);
+        entityWithNulls.setName("Test");
 
         CustomerEntity savedEntity = new CustomerEntity();
         savedEntity.setId(5L);
         savedEntity.setPhoneNumber("+420724555666");
-        savedEntity.setFirstName("Test");
-        savedEntity.setLastName(null);
+        savedEntity.setName("Test");
         savedEntity.setActive(true);
 
         when(customerRepository.save(entityWithNulls)).thenReturn(savedEntity);
@@ -270,7 +259,6 @@ public class CustomerServiceTest {
         CustomerEntity result = customerService.create(entityWithNulls);
 
         assertThat(result).isEqualTo(savedEntity);
-        assertThat(result.getLastName()).isNull();
         verify(customerRepository, times(1)).save(entityWithNulls);
     }
 }
