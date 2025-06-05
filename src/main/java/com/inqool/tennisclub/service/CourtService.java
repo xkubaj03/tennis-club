@@ -3,6 +3,7 @@ package com.inqool.tennisclub.service;
 import com.inqool.tennisclub.data.model.CourtEntity;
 import com.inqool.tennisclub.data.repository.CourtRepository;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;
+import com.inqool.tennisclub.exceptions.NonUniqueFieldException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class CourtService {
     }
 
     public CourtEntity create(CourtEntity court) {
+        if (courtRepository.findByCourtNumber(court.getCourtNumber()).isPresent()) {
+            throw new NonUniqueFieldException("CourtNumber with value " + court.getCourtNumber() + " already exists");
+        }
         return courtRepository.save(court);
     }
 

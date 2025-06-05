@@ -37,6 +37,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    @ExceptionHandler(NonUniqueFieldException.class)
+    public ResponseEntity<Object> handleNonUniqueFieldExceptionException(NonUniqueFieldException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Field already exists");
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationError(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new HashMap<>();
