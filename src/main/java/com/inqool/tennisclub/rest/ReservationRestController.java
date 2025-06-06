@@ -44,7 +44,7 @@ public class ReservationRestController {
         return ResponseEntity.ok(reservationFacade.findAll());
     }
 
-    @Operation(summary = "Get a Reservations by court number")
+    @Operation(summary = "Get a Reservation by ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Reservations found"),
         @ApiResponse(responseCode = "404", description = "Court number not found", content = @Content)
