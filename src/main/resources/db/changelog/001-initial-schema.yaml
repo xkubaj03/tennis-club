@@ -1,0 +1,168 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-court-surface-table
+      author: josef.kuba
+      changes:
+        - createTable:
+            tableName: court_surface
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: surface_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surface_description
+                  type: VARCHAR(255)
+              - column:
+                  name: cost_per_minute
+                  type: DECIMAL(38,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                  defaultValue: true
+
+  - changeSet:
+      id: 002-create-customer-table
+      author: josef.kuba
+      changes:
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: phone_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                  defaultValue: true
+
+  - changeSet:
+      id: 003-create-court-table
+      author: josef.kuba
+      changes:
+        - createTable:
+            tableName: court
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: court_number
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: court_surface_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                  defaultValue: true
+
+  - changeSet:
+      id: 004-create-reservation-table
+      author: josef.kuba
+      changes:
+        - createTable:
+            tableName: reservation
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: court_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: game_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                  defaultValue: true
+
+  - changeSet:
+      id: 005-add-foreign-key-constraints
+      author: josef.kuba
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: court
+            baseColumnNames: court_surface_id
+            referencedTableName: court_surface
+            referencedColumnNames: id
+            constraintName: fk_court_surface
+
+        - addForeignKeyConstraint:
+            baseTableName: reservation
+            baseColumnNames: court_id
+            referencedTableName: court
+            referencedColumnNames: id
+            constraintName: fk_reservation_court
+
+        - addForeignKeyConstraint:
+            baseTableName: reservation
+            baseColumnNames: customer_id
+            referencedTableName: customer
+            referencedColumnNames: id
+            constraintName: fk_reservation_customer

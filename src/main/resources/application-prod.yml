@@ -1,15 +1,25 @@
+app:
+  init-data: false
+
 spring:
+  liquibase:
+    enabled: true
+    drop-first: false
+  
   datasource:
     url: jdbc:postgresql://prod_tennis_db:5432/tennisclub
     username: tennis_admin
     password: strong33password
     driver-class-name: org.h2.Driver
+  
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     open-in-view: false
-
-spring.h2.console.enabled: false
+  
+  h2:
+    console:
+      enabled: false
 
 springdoc:
   swagger-ui:
@@ -18,3 +28,4 @@ springdoc:
 logging:
   level:
     org.hibernate.SQL: WARN
+    liquibase: INFO
