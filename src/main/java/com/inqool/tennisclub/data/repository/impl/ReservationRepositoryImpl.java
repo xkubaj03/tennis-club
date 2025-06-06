@@ -88,43 +88,10 @@ public class ReservationRepositoryImpl extends BaseRepositoryImpl<ReservationEnt
     }
 
     @Override
-    public List<ReservationEntity> findOverlappingReservations(
-            Long courtId, OffsetDateTime startTime, OffsetDateTime endTime) {
-        return findOverlappingReservations(courtId, startTime, endTime, null);
-    }
-
-    @Override
-    public List<ReservationEntity> findOverlappingReservations(
-            Long courtId, OffsetDateTime startTime, OffsetDateTime endTime, Long excludeReservationId) {
-
-        validateCourtAvailabilityParams(courtId, startTime, endTime);
-
-        String queryStr = "SELECT r FROM ReservationEntity r WHERE r.court.id = :courtId "
-                + "AND r.active = true "
-                + "AND NOT (r.endTime <= :startTime OR r.startTime >= :endTime)";
-
-        if (excludeReservationId != null) {
-            queryStr += " AND r.id != :excludeReservationId";
-        }
-
-        TypedQuery<ReservationEntity> query = entityManager.createQuery(queryStr, ReservationEntity.class);
-        query.setParameter("courtId", courtId);
-        query.setParameter("startTime", startTime);
-        query.setParameter("endTime", endTime);
-
-        if (excludeReservationId != null) {
-            query.setParameter("excludeReservationId", excludeReservationId);
-        }
-
-        return query.getResultList();
-    }
-
-    @Override
     public boolean isCourtAvailable(Long courtId, OffsetDateTime startTime, OffsetDateTime endTime) {
         return isCourtAvailable(courtId, startTime, endTime, null);
     }
 
-    @Override
     public boolean isCourtAvailable(
             Long courtId, OffsetDateTime startTime, OffsetDateTime endTime, Long excludeReservationId) {
 

@@ -59,9 +59,11 @@ public class ReservationService {
     }
 
     public ReservationEntity update(ReservationEntity entity) {
-        reservationRepository
+        ReservationEntity oldEntity = reservationRepository
                 .findById(entity.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Reservation with id " + entity.getId() + " not found"));
+
+        entity.setCreatedAt(oldEntity.getCreatedAt());
 
         return reservationRepository.save(entity);
     }
