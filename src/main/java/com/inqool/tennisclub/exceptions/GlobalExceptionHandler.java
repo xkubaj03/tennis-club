@@ -2,6 +2,7 @@ package com.inqool.tennisclub.exceptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,30 @@ public class GlobalExceptionHandler {
         body.put("error", "Not Found");
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(ReservationAlreadyExist.class)
+    public ResponseEntity<Object> handleReservationAlreadyExists(ReservationAlreadyExist ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Reservation Already Exists");
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleIntegrityViolationException(DataIntegrityViolationException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Integrity Violation");
+        body.put("message", ex.getMessage()); // TODO Check if usable
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(NonUniqueFieldException.class)
+    public ResponseEntity<Object> handleNonUniqueFieldExceptionException(NonUniqueFieldException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Field already exists");
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

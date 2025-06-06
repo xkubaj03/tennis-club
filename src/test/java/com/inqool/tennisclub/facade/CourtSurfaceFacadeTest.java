@@ -1,16 +1,17 @@
 package com.inqool.tennisclub.facade;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.inqool.tennisclub.api.CourtSurfaceDto;
 import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
 import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
+import com.inqool.tennisclub.exceptions.EntityNotFoundException;
 import com.inqool.tennisclub.mappers.CourtSurfaceMapper;
 import com.inqool.tennisclub.service.CourtSurfaceService;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,24 +66,23 @@ public class CourtSurfaceFacadeTest {
     @Test
     void findById_existingId_returnsCourtSurface() {
         Long id = 1L;
-        when(courtSurfaceService.findById(id)).thenReturn(Optional.of(testEntity));
+        when(courtSurfaceService.findById(id)).thenReturn(testEntity);
         when(courtSurfaceMapper.toDto(testEntity)).thenReturn(testDto);
 
-        Optional<CourtSurfaceDto> result = courtSurfaceFacade.findById(id);
+        CourtSurfaceDto result = courtSurfaceFacade.findById(id);
 
-        assertThat(result).isPresent().contains(testDto);
+        assertThat(result).isEqualTo(testDto);
         verify(courtSurfaceService, times(1)).findById(id);
         verify(courtSurfaceMapper, times(1)).toDto(testEntity);
     }
 
     @Test
-    void findById_nonExistingId_returnsEmpty() {
+    void findById_nonExistingId_throwsException() {
         Long id = 99L;
-        when(courtSurfaceService.findById(id)).thenReturn(Optional.empty());
+        when(courtSurfaceService.findById(id)).thenThrow(new EntityNotFoundException("CourtSurface not found"));
 
-        Optional<CourtSurfaceDto> result = courtSurfaceFacade.findById(id);
+        assertThrows(EntityNotFoundException.class, () -> courtSurfaceFacade.findById(id));
 
-        assertThat(result).isEmpty();
         verify(courtSurfaceService, times(1)).findById(id);
         verify(courtSurfaceMapper, never()).toDto(any());
     }

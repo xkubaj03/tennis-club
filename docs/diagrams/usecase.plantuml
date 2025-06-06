@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+
+actor User
+
+rectangle "Court Reservation System" {
+
+    ' --- Court Surface ---
+    User --> (Create Court Surface)
+    User --> (Get All Court Surfaces)
+    User --> (Get Court Surface by ID)
+    User --> (Update Court Surface)
+    User --> (Delete Court Surface)
+
+    ' --- Court ---
+    User --> (Create Court)
+    User --> (Get All Courts)
+    User --> (Get Court by ID)
+    User --> (Update Court)
+    User --> (Delete Court)
+
+    ' --- Reservation ---
+    User --> (Create Reservation)
+    User --> (Get All Reservations)
+    User --> (Get Reservation by ID)
+    User --> (Get Reservations by Court Number)
+    User --> (Get Reservations by Phone Number)
+    User --> (Update Reservation)
+    User --> (Delete Reservation)
+
+    ' --- Includes and extends ---
+    (Create Reservation) --> (Check for Overlaps) : <<include>>
+    (Create Reservation) --> (Calculate Reservation Price) : <<include>>
+
+    (Get Reservations by Phone Number) --> (Filter for Future Reservations) : <<extend>>
+}
+@enduml

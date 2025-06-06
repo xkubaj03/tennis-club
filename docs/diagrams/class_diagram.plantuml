@@ -1,0 +1,269 @@
+@startuml
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+package "REST Controllers" {
+  class CourtRestController {
+    + findAll(): ResponseEntity<List<CourtDto>>
+    + findById(Long): ResponseEntity<CourtDto>
+    + create(CreateCourtDto): ResponseEntity<CourtDto>
+    + update(Long, CreateCourtDto): ResponseEntity<CourtDto>
+    + delete(Long): ResponseEntity<Void>
+  }
+
+  class CourtSurfaceRestController {
+    + findAll(): ResponseEntity<List<CourtSurfaceDto>>
+    + findById(Long): ResponseEntity<CourtSurfaceDto>
+    + create(CreateCourtSurfaceDto): ResponseEntity<CourtSurfaceDto>
+    + update(Long, CreateCourtSurfaceDto): ResponseEntity<CourtSurfaceDto>
+    + delete(Long): ResponseEntity<Void>
+  }
+
+  class ReservationRestController {
+    + findAll(): ResponseEntity<List<ReservationDto>>
+    + findById(Long): ResponseEntity<ReservationDto>
+    + create(CreateReservationDto): ResponseEntity<ReservationDto>
+    + update(Long, CreateReservationDto): ResponseEntity<ReservationDto>
+    + delete(Long): ResponseEntity<Void>
+    + findByPhone(String, boolean): ResponseEntity<List<ReservationDto>>
+    + findByCourt(Integer): ResponseEntity<List<ReservationDto>>
+  }
+}
+
+package "Facades" {
+  class CourtFacade {
+    + findAll(): List<CourtDto>
+    + findById(Long): CourtDto
+    + create(CreateCourtDto): CourtDto
+    + update(Long, CreateCourtDto): CourtDto
+    + deleteById(Long): void
+  }
+
+  class CourtSurfaceFacade {
+    + findAll(): List<CourtSurfaceDto>
+    + findById(Long): CourtSurfaceDto
+    + create(CreateCourtSurfaceDto): CourtSurfaceDto
+    + update(Long, CreateCourtSurfaceDto): CourtSurfaceDto
+    + deleteById(Long): void
+  }
+
+  class ReservationFacade {
+    + findAll(): List<ReservationDto>
+    + findById(Long): ReservationDto
+    + create(CreateReservationDto): ReservationDto
+    + update(Long, CreateReservationDto): ReservationDto
+    + deleteById(Long): void
+    + findByPhone(String, boolean): List<ReservationDto>
+    + findByCourt(Integer): List<ReservationDto>
+  }
+}
+
+package "Services" {
+  class CourtService {
+    + findAll(): List<CourtEntity>
+    + findById(Long): CourtEntity
+    + create(CourtEntity): CourtEntity
+    + update(CourtEntity): CourtEntity
+    + deleteById(Long): void
+    + findByCourtNumber(Integer): CourtEntity
+  }
+
+  class CourtSurfaceService {
+    + findAll(): List<CourtSurfaceEntity>
+    + findById(Long): CourtSurfaceEntity
+    + create(CourtSurfaceEntity): CourtSurfaceEntity
+    + update(CourtSurfaceEntity): CourtSurfaceEntity
+    + deleteById(Long): void
+  }
+
+  class ReservationService {
+    + findAll(): List<ReservationEntity>
+    + findById(Long): ReservationEntity
+    + create(ReservationEntity): ReservationEntity
+    + update(ReservationEntity): ReservationEntity
+    + deleteById(Long): void
+    + calculateTotalPrice(ReservationEntity): BigDecimal
+    + findByCourtNumber(Integer): List<ReservationEntity>
+    + findByPhoneNumber(String, boolean): List<ReservationEntity>
+  }
+
+  class CustomerService {
+    + findAll(): List<CustomerEntity>
+    + findById(Long): Optional<CustomerEntity>
+    + create(CustomerEntity): CustomerEntity
+    + update(CustomerEntity): CustomerEntity
+    + deleteById(Long): void
+    + findByPhoneNumber(String): Optional<CustomerEntity>
+    + createIfNotExist(CustomerEntity): CustomerEntity
+  }
+}
+
+package "Repositories" {
+  interface BaseRepository<T, ID> {
+    + save(T): T
+    + findById(ID): Optional<T>
+    + findAll(): List<T>
+    + deleteById(ID): void
+    + existsById(ID): boolean
+    + delete(T): void
+    + count(): long
+  }
+
+  interface CourtRepository {
+    + findByCourtNumber(Integer): Optional<CourtEntity>
+    + findByCourtSurface(CourtSurfaceEntity): List<CourtEntity>
+  }
+
+  interface CourtSurfaceRepository {
+    + findBySurfaceName(String): Optional<CourtSurfaceEntity>
+  }
+
+  interface ReservationRepository {
+    + findByCourtNumberOrderByCreatedAt(Integer): List<ReservationEntity>
+    + findByCustomerPhoneNumber(String): List<ReservationEntity>
+    + findFutureReservationsByCustomerPhoneNumber(String): List<ReservationEntity>
+    + isCourtAvailable(Long, OffsetDateTime, OffsetDateTime): boolean
+    + findOverlappingReservations(Long, OffsetDateTime, OffsetDateTime): List<ReservationEntity>
+  }
+
+  interface CustomerRepository {
+    + findByPhoneNumber(String): Optional<CustomerEntity>
+  }
+}
+
+package "Entities" {
+  class CourtEntity {
+    - id: Long
+    - courtNumber: Integer
+    - active: boolean
+  }
+
+  class CourtSurfaceEntity {
+    - id: Long
+    - surfaceName: String
+    - surfaceDescription: String
+    - costPerMinute: BigDecimal
+    - active: boolean
+  }
+
+  class ReservationEntity {
+    - id: Long
+    - startTime: OffsetDateTime
+    - endTime: OffsetDateTime
+    - gameType: GameType
+    - createdAt: OffsetDateTime
+    - active: boolean
+  }
+
+  class CustomerEntity {
+    - id: Long
+    - name: String
+    - phoneNumber: String
+    - active: boolean
+  }
+
+  enum GameType {
+    SINGLES
+    DOUBLES
+  }
+}
+
+package "DTOs" {
+  class CourtDto {
+    - id: Long
+    - courtNumber: Integer
+    - surfaceId: Long
+  }
+
+  class CourtSurfaceDto {
+    - id: Long
+    - surfaceName: String
+    - surfaceDescription: String
+    - costPerMinute: BigDecimal
+  }
+
+  class ReservationDto {
+    - id: Long
+    - courtId: Long
+    - customerName: String
+    - phoneNumber: String
+    - courtNumber: Integer
+    - gameType: GameType
+    - startTime: OffsetDateTime
+    - endTime: OffsetDateTime
+    - totalPrice: BigDecimal
+    - createdAt: OffsetDateTime
+  }
+
+  class CreateCourtDto {
+    - courtNumber: Integer
+    - surfaceId: Long
+  }
+
+  class CreateCourtSurfaceDto {
+    - surfaceName: String
+    - surfaceDescription: String
+    - costPerMinute: Double
+  }
+
+  class CreateReservationDto {
+    - customerName: String
+    - phoneNumber: String
+    - gameType: GameType
+    - courtNumber: Integer
+    - startTime: OffsetDateTime
+    - endTime: OffsetDateTime
+  }
+}
+
+package "Mappers" {
+  interface CourtMapper {
+    + toDto(CourtEntity): CourtDto
+    + toDtoList(List<CourtEntity>): List<CourtDto>
+    + toEntity(CreateCourtDto, CourtSurfaceService): CourtEntity
+  }
+
+  interface CourtSurfaceMapper {
+    + toDto(CourtSurfaceEntity): CourtSurfaceDto
+    + toDtoList(List<CourtSurfaceEntity>): List<CourtSurfaceDto>
+    + toEntity(CreateCourtSurfaceDto): CourtSurfaceEntity
+  }
+
+  interface ReservationMapper {
+    + toDto(ReservationEntity, ReservationService): ReservationDto
+    + toDtoList(List<ReservationEntity>, ReservationService): List<ReservationDto>
+    + toReservationEntity(CreateReservationDto, CustomerService, CourtService): ReservationEntity
+    + calculatePrice(ReservationEntity, ReservationService): BigDecimal
+  }
+}
+
+' Relationships between layers
+CourtRestController --> CourtFacade
+CourtSurfaceRestController --> CourtSurfaceFacade
+ReservationRestController --> ReservationFacade
+
+CourtFacade --> CourtService
+CourtFacade --> CourtMapper
+CourtSurfaceFacade --> CourtSurfaceService
+CourtSurfaceFacade --> CourtSurfaceMapper
+ReservationFacade --> ReservationService
+ReservationFacade --> ReservationMapper
+
+CourtService --> CourtRepository
+CourtSurfaceService --> CourtSurfaceRepository
+ReservationService --> ReservationRepository
+CustomerService --> CustomerRepository
+
+CourtRepository --|> BaseRepository
+CourtSurfaceRepository --|> BaseRepository
+ReservationRepository --|> BaseRepository
+CustomerRepository --|> BaseRepository
+
+' Entity relationships
+CourtEntity }o--|| CourtSurfaceEntity
+ReservationEntity }o--|| CourtEntity
+ReservationEntity }o--|| CustomerEntity
+ReservationEntity ||--|| GameType
+
+@enduml

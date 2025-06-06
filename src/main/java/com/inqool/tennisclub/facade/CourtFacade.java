@@ -5,8 +5,9 @@ import com.inqool.tennisclub.api.CreateCourtDto;
 import com.inqool.tennisclub.data.model.CourtEntity;
 import com.inqool.tennisclub.mappers.CourtMapper;
 import com.inqool.tennisclub.service.CourtService;
+import com.inqool.tennisclub.service.CourtSurfaceService;
 import java.util.List;
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,18 +15,23 @@ public class CourtFacade {
 
     private final CourtService courtService;
     private final CourtMapper courtMapper;
+    private final CourtSurfaceService courtSurfaceService;
 
-    public CourtFacade(CourtService courtService, CourtMapper courtMapper) {
+    @Autowired
+    public CourtFacade(CourtService courtService, CourtMapper courtMapper, CourtSurfaceService courtSurfaceService) {
         this.courtService = courtService;
         this.courtMapper = courtMapper;
+        this.courtSurfaceService = courtSurfaceService;
     }
 
     public CourtDto create(CreateCourtDto dto) {
-        return courtService.createCourt(dto);
+        CourtEntity entity = courtMapper.toEntity(dto, courtSurfaceService);
+        CourtEntity saved = courtService.create(entity);
+        return courtMapper.toDto(saved);
     }
 
-    public Optional<CourtDto> findById(Long id) {
-        return courtService.findById(id).map(courtMapper::toDto);
+    public CourtDto findById(Long id) {
+        return courtMapper.toDto(courtService.findById(id));
     }
 
     public List<CourtDto> findAll() {
@@ -33,7 +39,7 @@ public class CourtFacade {
     }
 
     public CourtDto update(Long id, CreateCourtDto dto) {
-        CourtEntity entity = courtMapper.toEntity(dto);
+        CourtEntity entity = courtMapper.toEntity(dto, courtSurfaceService);
         entity.setId(id);
         CourtEntity saved = courtService.update(entity);
         return courtMapper.toDto(saved);

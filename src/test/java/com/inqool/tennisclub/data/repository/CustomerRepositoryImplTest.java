@@ -14,11 +14,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 public class CustomerRepositoryImplTest {
 
     @Autowired
@@ -29,8 +31,7 @@ public class CustomerRepositoryImplTest {
     @BeforeEach
     void setUp() {
         testCustomer = new CustomerEntity();
-        testCustomer.setFirstName("John");
-        testCustomer.setLastName("Doe");
+        testCustomer.setName("John Doe");
         testCustomer.setPhoneNumber("123456789");
         testCustomer.setActive(true);
     }
@@ -57,8 +58,7 @@ public class CustomerRepositoryImplTest {
 
         assertNotNull(saved);
         assertNotNull(saved.getId());
-        assertEquals("John", saved.getFirstName());
-        assertEquals("Doe", saved.getLastName());
+        assertEquals("John Doe", saved.getName());
         assertEquals("123456789", saved.getPhoneNumber());
         assertTrue(saved.isActive());
     }
@@ -73,8 +73,7 @@ public class CustomerRepositoryImplTest {
         assertEquals(saved.getId(), found.get().getId());
         assertEquals("123456789", found.get().getPhoneNumber());
         assertTrue(found.get().isActive());
-        assertEquals("John", found.get().getFirstName());
-        assertEquals("Doe", found.get().getLastName());
+        assertEquals("John Doe", found.get().getName());
     }
 
     @Test
@@ -127,14 +126,12 @@ public class CustomerRepositoryImplTest {
     @Test
     void findAll_withMultipleEntities_returnsAllActiveEntities() {
         CustomerEntity customer1 = new CustomerEntity();
-        customer1.setFirstName("Test1");
-        customer1.setLastName("Customer1");
+        customer1.setName("Test1");
         customer1.setPhoneNumber("111111111");
         customer1.setActive(true);
 
         CustomerEntity customer2 = new CustomerEntity();
-        customer2.setFirstName("Test2");
-        customer2.setLastName("Customer2");
+        customer2.setName("Test2");
         customer2.setPhoneNumber("222222222");
         customer2.setActive(true);
 
@@ -145,15 +142,11 @@ public class CustomerRepositoryImplTest {
 
         assertNotNull(all);
 
-        boolean hasTestCustomer1FirstName = all.stream().anyMatch(c -> "Test1".equals(c.getFirstName()));
-        boolean hasTestCustomer1LastName = all.stream().anyMatch(c -> "Customer1".equals(c.getLastName()));
-        boolean hasTestCustomer2FirstName = all.stream().anyMatch(c -> "Test2".equals(c.getFirstName()));
-        boolean hasTestCustomer2LastName = all.stream().anyMatch(c -> "Customer2".equals(c.getLastName()));
+        boolean hasTestCustomer1FirstName = all.stream().anyMatch(c -> "Test1".equals(c.getName()));
+        boolean hasTestCustomer2FirstName = all.stream().anyMatch(c -> "Test2".equals(c.getName()));
 
         assertTrue(hasTestCustomer1FirstName, "Should contain first name 'Test1'");
-        assertTrue(hasTestCustomer1LastName, "Should contain last name 'Customer1'");
         assertTrue(hasTestCustomer2FirstName, "Should contain first name 'Test2'");
-        assertTrue(hasTestCustomer2LastName, "Should contain last name 'Customer2'");
 
         assertTrue(all.stream().allMatch(CustomerEntity::isActive), "All returned entities should be active");
     }

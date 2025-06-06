@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class CourtRestController {
 
     private final CourtFacade courtFacade;
 
+    @Autowired
     public CourtRestController(CourtFacade courtFacade) {
         this.courtFacade = courtFacade;
     }
@@ -34,7 +36,7 @@ public class CourtRestController {
     @PostMapping
     public ResponseEntity<CourtDto> create(@RequestBody @Valid CreateCourtDto dto) {
         CourtDto created = courtFacade.create(dto);
-        return ResponseEntity.created(URI.create("/court/" + created.id())).body(created);
+        return ResponseEntity.created(URI.create("/court/" + created.getId())).body(created);
     }
 
     @Operation(summary = "Get all courts")
@@ -51,10 +53,7 @@ public class CourtRestController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<CourtDto> findById(@PathVariable Long id) {
-        return courtFacade
-                .findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(courtFacade.findById(id));
     }
 
     @Operation(summary = "Update a court")

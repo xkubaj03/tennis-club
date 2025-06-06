@@ -20,7 +20,7 @@ public class CourtSurfaceEntity {
     @Column(name = "surface_name", nullable = false)
     private String surfaceName;
 
-    @Column(name = "surface_description", nullable = true)
+    @Column(name = "surface_description")
     private String surfaceDescription;
 
     @Column(name = "cost_per_minute", nullable = false)

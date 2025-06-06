@@ -25,22 +25,7 @@ public interface ReservationRepository extends BaseRepository<ReservationEntity,
     List<ReservationEntity> findFutureReservationsByCustomerPhoneNumber(String phoneNumber);
 
     /**
-     * Find overlapping reservations for given court and time period
-     */
-    List<ReservationEntity> findOverlappingReservations(Long courtId, OffsetDateTime startTime, OffsetDateTime endTime);
-
-    /**
-     * Find overlapping reservations for given court and time period, excluding specific reservation
-     */
-    List<ReservationEntity> findOverlappingReservations(
-            Long courtId, OffsetDateTime startTime, OffsetDateTime endTime, Long excludeReservationId);
-    /**
      * Check if court is available for given time period
      */
     boolean isCourtAvailable(Long courtId, OffsetDateTime startTime, OffsetDateTime endTime);
-
-    /**
-     * Check if court is available for given time period, excluding specific reservation
-     */
-    boolean isCourtAvailable(Long courtId, OffsetDateTime startTime, OffsetDateTime endTime, Long excludeReservationId);
 }

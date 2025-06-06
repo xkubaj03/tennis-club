@@ -1,5 +1,6 @@
 package com.inqool.tennisclub.data.model;
 
+import com.inqool.tennisclub.data.model.enums.GameType;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;

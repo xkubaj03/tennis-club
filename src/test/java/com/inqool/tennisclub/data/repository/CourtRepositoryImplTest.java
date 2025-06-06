@@ -17,11 +17,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 public class CourtRepositoryImplTest {
 
     @Autowired

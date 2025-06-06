@@ -3,6 +3,7 @@ package com.inqool.tennisclub.data.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.inqool.tennisclub.data.model.*;
+import com.inqool.tennisclub.data.model.enums.GameType;
 import com.inqool.tennisclub.data.repository.impl.CourtRepositoryImpl;
 import com.inqool.tennisclub.data.repository.impl.CourtSurfaceRepositoryImpl;
 import com.inqool.tennisclub.data.repository.impl.CustomerRepositoryImpl;
@@ -19,11 +20,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
 @Rollback
+@ActiveProfiles("test")
 public class ReservationRepositoryImplTest {
 
     @Autowired
@@ -57,8 +60,7 @@ public class ReservationRepositoryImplTest {
         courtRepositoryImpl.save(testCourt);
 
         testCustomer = new CustomerEntity();
-        testCustomer.setFirstName("John");
-        testCustomer.setLastName("Doe");
+        testCustomer.setName("John Doe");
         testCustomer.setPhoneNumber("123456789");
         testCustomer.setActive(true);
         customerRepositoryImpl.save(testCustomer);
@@ -216,86 +218,6 @@ public class ReservationRepositoryImplTest {
         List<ReservationEntity> found = reservationRepositoryImpl.findFutureReservationsByCustomerPhoneNumber("");
         assertNotNull(found);
         assertTrue(found.isEmpty());
-    }
-
-    @Test
-    void findOverlappingReservations_withOverlap_returnsOverlappingReservations() {
-        ReservationEntity saved = reservationRepositoryImpl.save(testReservation);
-
-        OffsetDateTime startTime = testReservation.getStartTime().minusMinutes(30);
-        OffsetDateTime endTime = testReservation.getStartTime().plusMinutes(30);
-
-        List<ReservationEntity> found =
-                reservationRepositoryImpl.findOverlappingReservations(testCourt.getId(), startTime, endTime);
-
-        assertNotNull(found);
-        assertTrue(found.stream().anyMatch(r -> r.getId().equals(saved.getId())));
-    }
-
-    @Test
-    void findOverlappingReservations_noOverlap_returnsEmptyList() {
-        reservationRepositoryImpl.save(testReservation);
-
-        OffsetDateTime startTime = testReservation.getEndTime().plusHours(1);
-        OffsetDateTime endTime = testReservation.getEndTime().plusHours(2);
-
-        List<ReservationEntity> found =
-                reservationRepositoryImpl.findOverlappingReservations(testCourt.getId(), startTime, endTime);
-
-        assertNotNull(found);
-        assertTrue(found.isEmpty());
-    }
-
-    @Test
-    void findOverlappingReservations_withExclusion_excludesSpecifiedReservation() {
-        ReservationEntity saved = reservationRepositoryImpl.save(testReservation);
-
-        OffsetDateTime startTime = testReservation.getStartTime().minusMinutes(30);
-        OffsetDateTime endTime = testReservation.getStartTime().plusMinutes(30);
-
-        List<ReservationEntity> found = reservationRepositoryImpl.findOverlappingReservations(
-                testCourt.getId(), startTime, endTime, saved.getId());
-
-        assertNotNull(found);
-        assertTrue(found.stream().noneMatch(r -> r.getId().equals(saved.getId())));
-    }
-
-    @Test
-    void findOverlappingReservations_nullCourtId_throwsException() {
-        OffsetDateTime startTime = OffsetDateTime.now();
-        OffsetDateTime endTime = OffsetDateTime.now().plusHours(1);
-
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> {
-            reservationRepositoryImpl.findOverlappingReservations(null, startTime, endTime);
-        });
-    }
-
-    @Test
-    void findOverlappingReservations_nullStartTime_throwsException() {
-        OffsetDateTime endTime = OffsetDateTime.now().plusHours(1);
-
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> {
-            reservationRepositoryImpl.findOverlappingReservations(1L, null, endTime);
-        });
-    }
-
-    @Test
-    void findOverlappingReservations_nullEndTime_throwsException() {
-        OffsetDateTime startTime = OffsetDateTime.now();
-
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> {
-            reservationRepositoryImpl.findOverlappingReservations(1L, startTime, null);
-        });
-    }
-
-    @Test
-    void findOverlappingReservations_startTimeAfterEndTime_throwsException() {
-        OffsetDateTime startTime = OffsetDateTime.now().plusHours(2);
-        OffsetDateTime endTime = OffsetDateTime.now().plusHours(1);
-
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> {
-            reservationRepositoryImpl.findOverlappingReservations(1L, startTime, endTime);
-        });
     }
 
     @Test
