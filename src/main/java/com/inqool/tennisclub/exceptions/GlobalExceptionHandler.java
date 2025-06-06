@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleIntegrityViolationException(DataIntegrityViolationException ex) {
         Map<String, Object> body = new HashMap<>();
         body.put("error", "Integrity Violation");
-        body.put("message", ex.getMessage()); // TODO Check if usable
+        body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
