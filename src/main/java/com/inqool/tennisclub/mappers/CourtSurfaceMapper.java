@@ -15,5 +15,7 @@ public interface CourtSurfaceMapper {
     List<CourtSurfaceDto> toDtoList(List<CourtSurfaceEntity> entities);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "courts", ignore = true)
+    @Mapping(target = "active", ignore = true)
     CourtSurfaceEntity toEntity(CreateCourtSurfaceDto dto);
 }

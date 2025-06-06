@@ -8,20 +8,14 @@ import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mapstruct.factory.Mappers;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {CourtSurfaceMapperImpl.class})
 class CourtSurfaceMapperTest {
 
-    @Autowired
-    private CourtSurfaceMapper mapper;
+    private final CourtSurfaceMapper mapper = Mappers.getMapper(CourtSurfaceMapper.class);
 
     @Test
-    void toDto_MapEntityToDto() {
+    void toDto_validEntity_returnsMappedDto() {
         CourtSurfaceEntity entity = new CourtSurfaceEntity();
         entity.setId(1L);
         entity.setSurfaceName("Clay");
@@ -38,7 +32,7 @@ class CourtSurfaceMapperTest {
     }
 
     @Test
-    void toDtoList_MapEntitiesToDtos() {
+    void toDtoList_validEntities_returnsMappedDtoList() {
         CourtSurfaceEntity entity1 = new CourtSurfaceEntity();
         entity1.setId(1L);
         entity1.setSurfaceName("Clay");
@@ -63,7 +57,7 @@ class CourtSurfaceMapperTest {
     }
 
     @Test
-    void toEntity_MapCreateDtoToEntityWithoutId() {
+    void toEntity_validCreateDto_returnsMappedEntity() {
         CreateCourtSurfaceDto createDto = new CreateCourtSurfaceDto();
         createDto.setSurfaceName("Hard");
         createDto.setCostPerMinute(0.5);
@@ -74,5 +68,15 @@ class CourtSurfaceMapperTest {
         assertThat(entity.getId()).isNull();
         assertThat(entity.getSurfaceName()).isEqualTo("Hard");
         assertThat(entity.getCostPerMinute()).isEqualTo(BigDecimal.valueOf(0.5));
+    }
+
+    @Test
+    void toDto_nullInput_returnsNull() {
+        assertThat(mapper.toDto(null)).isNull();
+    }
+
+    @Test
+    void toEntity_nullInput_returnsNull() {
+        assertThat(mapper.toEntity(null)).isNull();
     }
 }

@@ -23,6 +23,8 @@ public interface ReservationMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "customer", source = ".", qualifiedByName = "findOrCreateCustomer")
     @Mapping(target = "court", source = "courtNumber", qualifiedByName = "findCourt")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "active", ignore = true)
     ReservationEntity toReservationEntity(
             CreateReservationDto dto, @Context CustomerService customerService, @Context CourtService courtService);
 
