@@ -9,6 +9,7 @@ import com.inqool.tennisclub.service.CustomerService;
 import com.inqool.tennisclub.service.ReservationService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +19,7 @@ public class ReservationFacade {
     private final CourtService courtService;
     private final ReservationMapper reservationMapper;
 
+    @Autowired
     public ReservationFacade(
             ReservationService reservationService,
             CustomerService customerService,

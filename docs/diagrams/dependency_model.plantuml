@@ -1,0 +1,135 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+package "Presentation Layer (Controllers)" {
+    class CourtRestController
+    class CourtSurfaceRestController
+    class ReservationRestController
+    class GlobalExceptionHandler
+}
+
+package "Business Layer (Facades & Services)" {
+    package "Facades" {
+        class CourtFacade
+        class CourtSurfaceFacade
+        class ReservationFacade
+    }
+
+    package "Services" {
+        class CourtService
+        class CourtSurfaceService
+        class ReservationService
+        class CustomerService
+    }
+}
+
+package "Mapping Layer" {
+    interface CourtMapper << interface >>
+    class CourtMapperImpl
+    interface CourtSurfaceMapper << interface >>
+    class CourtSurfaceMapperImpl
+    interface ReservationMapper << interface >>
+    class ReservationMapperImpl
+}
+
+package "Data Access Layer" {
+    package "Repository Interfaces" {
+        interface BaseRepository<T, ID> << interface >>
+        interface CourtRepository << interface >>
+        interface CourtSurfaceRepository << interface >>
+        interface ReservationRepository << interface >>
+        interface CustomerRepository << interface >>
+    }
+
+    package "Repository Implementations" {
+        class BaseRepositoryImpl<T, ID>
+        class CourtRepositoryImpl
+        class CourtSurfaceRepositoryImpl
+        class ReservationRepositoryImpl
+        class CustomerRepositoryImpl
+    }
+}
+
+package "Domain Models" {
+    package "Entities" {
+        class CourtEntity
+        class CourtSurfaceEntity
+        class ReservationEntity
+        class CustomerEntity
+    }
+
+    package "DTOs" {
+        class CourtDto
+        class CreateCourtDto
+        class CourtSurfaceDto
+        class CreateCourtSurfaceDto
+        class ReservationDto
+        class CreateReservationDto
+    }
+
+    package "Enums & Exceptions" {
+        enum GameType << enumeration >>
+        class EntityNotFoundException
+        class NonUniqueFieldException
+        class ReservationAlreadyExist
+    }
+}
+
+package "Configuration & Initialization" {
+    class TennisClubApplication
+    class DataInitializer
+}
+
+' Controller -> Facade relationships
+CourtRestController --> CourtFacade
+CourtSurfaceRestController --> CourtSurfaceFacade
+ReservationRestController --> ReservationFacade
+
+' Facade -> Service relationships
+CourtFacade --> CourtService
+CourtFacade --> CourtSurfaceService
+CourtSurfaceFacade --> CourtSurfaceService
+ReservationFacade --> CourtService
+ReservationFacade --> CustomerService
+ReservationFacade --> ReservationService
+
+' Facade -> Mapper relationships
+CourtFacade --> CourtMapper
+CourtSurfaceFacade --> CourtSurfaceMapper
+ReservationFacade --> ReservationMapper
+
+' Service -> Repository relationships
+CourtService --> CourtRepositoryImpl
+CourtSurfaceService --> CourtSurfaceRepositoryImpl
+ReservationService --> ReservationRepositoryImpl
+CustomerService --> CustomerRepositoryImpl
+
+' Repository inheritance
+CourtRepository --|> BaseRepository
+CourtSurfaceRepository --|> BaseRepository
+ReservationRepository --|> BaseRepository
+CustomerRepository --|> BaseRepository
+
+CourtRepositoryImpl --|> BaseRepositoryImpl
+CourtSurfaceRepositoryImpl --|> BaseRepositoryImpl
+ReservationRepositoryImpl --|> BaseRepositoryImpl
+CustomerRepositoryImpl --|> BaseRepositoryImpl
+
+CourtRepositoryImpl ..|> CourtRepository
+CourtSurfaceRepositoryImpl ..|> CourtSurfaceRepository
+ReservationRepositoryImpl ..|> ReservationRepository
+CustomerRepositoryImpl ..|> CustomerRepository
+
+' Mapper implementations
+CourtMapperImpl ..|> CourtMapper
+CourtSurfaceMapperImpl ..|> CourtSurfaceMapper
+ReservationMapperImpl ..|> ReservationMapper
+
+' DataInitializer dependencies
+DataInitializer --> CourtRepositoryImpl
+DataInitializer --> CourtSurfaceRepositoryImpl
+
+@enduml

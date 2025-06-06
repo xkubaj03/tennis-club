@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class CourtRestController {
 
     private final CourtFacade courtFacade;
 
+    @Autowired
     public CourtRestController(CourtFacade courtFacade) {
         this.courtFacade = courtFacade;
     }

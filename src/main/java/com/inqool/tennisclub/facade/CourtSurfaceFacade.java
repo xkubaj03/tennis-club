@@ -6,6 +6,7 @@ import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import com.inqool.tennisclub.mappers.CourtSurfaceMapper;
 import com.inqool.tennisclub.service.CourtSurfaceService;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +15,7 @@ public class CourtSurfaceFacade {
     private final CourtSurfaceService courtSurfaceService;
     private final CourtSurfaceMapper courtSurfaceMapper;
 
+    @Autowired
     private CourtSurfaceFacade(CourtSurfaceService courtSurfaceService, CourtSurfaceMapper courtSurfaceMapper) {
         this.courtSurfaceService = courtSurfaceService;
         this.courtSurfaceMapper = courtSurfaceMapper;
