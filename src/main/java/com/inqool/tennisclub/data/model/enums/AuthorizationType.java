@@ -1,7 +1,6 @@
 package com.inqool.tennisclub.data.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
