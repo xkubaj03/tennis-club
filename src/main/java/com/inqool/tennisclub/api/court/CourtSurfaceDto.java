@@ -1,4 +1,4 @@
-package com.inqool.tennisclub.api;
+package com.inqool.tennisclub.api.court;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;

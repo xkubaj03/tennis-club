@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import com.inqool.tennisclub.api.CourtDto;
-import com.inqool.tennisclub.api.CreateCourtDto;
+import com.inqool.tennisclub.api.court.CourtDto;
+import com.inqool.tennisclub.api.court.CreateCourtDto;
 import com.inqool.tennisclub.data.model.CourtEntity;
 import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;

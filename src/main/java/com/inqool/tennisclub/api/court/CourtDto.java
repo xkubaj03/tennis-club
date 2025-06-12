@@ -1,4 +1,4 @@
-package com.inqool.tennisclub.api;
+package com.inqool.tennisclub.api.court;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.inqool.tennisclub.api;
+package com.inqool.tennisclub.api.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inqool.tennisclub.data.model.enums.GameType;

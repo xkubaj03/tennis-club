@@ -1,4 +1,4 @@
-package com.inqool.tennisclub.api;
+package com.inqool.tennisclub.api.reservation;
 
 import com.inqool.tennisclub.data.model.enums.GameType;
 import io.swagger.v3.oas.annotations.media.Schema;

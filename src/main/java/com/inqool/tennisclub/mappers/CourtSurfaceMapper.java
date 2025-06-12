@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.mappers;
 
-import com.inqool.tennisclub.api.CourtSurfaceDto;
-import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CreateCourtSurfaceDto;
 import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import java.util.List;
 import org.mapstruct.Mapper;

@@ -3,8 +3,8 @@ package com.inqool.tennisclub.mappers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.inqool.tennisclub.api.CreateReservationDto;
-import com.inqool.tennisclub.api.ReservationDto;
+import com.inqool.tennisclub.api.reservation.CreateReservationDto;
+import com.inqool.tennisclub.api.reservation.ReservationDto;
 import com.inqool.tennisclub.data.model.CourtEntity;
 import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import com.inqool.tennisclub.data.model.CustomerEntity;

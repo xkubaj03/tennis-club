@@ -1,4 +1,4 @@
-package com.inqool.tennisclub.api;
+package com.inqool.tennisclub.api.court;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

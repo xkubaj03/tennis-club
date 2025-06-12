@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.rest;
 
-import com.inqool.tennisclub.api.CourtSurfaceDto;
-import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CreateCourtSurfaceDto;
 import com.inqool.tennisclub.facade.CourtSurfaceFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

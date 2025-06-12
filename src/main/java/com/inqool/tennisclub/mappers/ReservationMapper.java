@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.mappers;
 
-import com.inqool.tennisclub.api.CreateReservationDto;
-import com.inqool.tennisclub.api.ReservationDto;
+import com.inqool.tennisclub.api.reservation.CreateReservationDto;
+import com.inqool.tennisclub.api.reservation.ReservationDto;
 import com.inqool.tennisclub.data.model.CourtEntity;
 import com.inqool.tennisclub.data.model.CustomerEntity;
 import com.inqool.tennisclub.data.model.ReservationEntity;

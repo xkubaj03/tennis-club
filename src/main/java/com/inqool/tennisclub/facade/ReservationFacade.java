@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.facade;
 
-import com.inqool.tennisclub.api.CreateReservationDto;
-import com.inqool.tennisclub.api.ReservationDto;
+import com.inqool.tennisclub.api.reservation.CreateReservationDto;
+import com.inqool.tennisclub.api.reservation.ReservationDto;
 import com.inqool.tennisclub.data.model.ReservationEntity;
 import com.inqool.tennisclub.mappers.ReservationMapper;
 import com.inqool.tennisclub.service.CourtService;

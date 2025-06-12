@@ -7,8 +7,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.inqool.tennisclub.api.CourtSurfaceDto;
-import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CreateCourtSurfaceDto;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;
 import com.inqool.tennisclub.facade.CourtSurfaceFacade;
 import java.math.BigDecimal;

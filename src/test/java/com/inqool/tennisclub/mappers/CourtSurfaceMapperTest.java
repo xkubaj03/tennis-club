@@ -2,8 +2,8 @@ package com.inqool.tennisclub.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.inqool.tennisclub.api.CourtSurfaceDto;
-import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CreateCourtSurfaceDto;
 import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import java.math.BigDecimal;
 import java.util.List;

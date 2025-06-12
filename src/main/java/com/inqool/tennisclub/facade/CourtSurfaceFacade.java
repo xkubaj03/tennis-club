@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.facade;
 
-import com.inqool.tennisclub.api.CourtSurfaceDto;
-import com.inqool.tennisclub.api.CreateCourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CourtSurfaceDto;
+import com.inqool.tennisclub.api.court.CreateCourtSurfaceDto;
 import com.inqool.tennisclub.data.model.CourtSurfaceEntity;
 import com.inqool.tennisclub.mappers.CourtSurfaceMapper;
 import com.inqool.tennisclub.service.CourtSurfaceService;

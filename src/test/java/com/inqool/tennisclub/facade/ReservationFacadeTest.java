@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import com.inqool.tennisclub.api.CreateReservationDto;
-import com.inqool.tennisclub.api.ReservationDto;
+import com.inqool.tennisclub.api.reservation.CreateReservationDto;
+import com.inqool.tennisclub.api.reservation.ReservationDto;
 import com.inqool.tennisclub.data.model.*;
 import com.inqool.tennisclub.data.model.enums.GameType;
 import com.inqool.tennisclub.exceptions.EntityNotFoundException;

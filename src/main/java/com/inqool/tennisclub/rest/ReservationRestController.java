@@ -1,7 +1,7 @@
 package com.inqool.tennisclub.rest;
 
-import com.inqool.tennisclub.api.CreateReservationDto;
-import com.inqool.tennisclub.api.ReservationDto;
+import com.inqool.tennisclub.api.reservation.CreateReservationDto;
+import com.inqool.tennisclub.api.reservation.ReservationDto;
 import com.inqool.tennisclub.facade.ReservationFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
