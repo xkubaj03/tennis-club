@@ -1,91 +1,76 @@
 package com.inqool.tennisclub.security;
 
-import com.inqool.tennisclub.security.jwt.AuthEntryPointJwt;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springdoc.core.customizers.OpenApiCustomizer;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
-    private final AuthEntryPointJwt unauthorizedHandler;
+    private final SimpleAuthEntryPoint authEntryPoint;
+
+    private final SimpleAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
-    public SecurityConfiguration(AuthEntryPointJwt unauthorizedHandler) {
-        this.unauthorizedHandler = unauthorizedHandler;
+    public SecurityConfiguration(SimpleAuthEntryPoint authEntryPoint, SimpleAccessDeniedHandler accessDeniedHandler) {
+        this.authEntryPoint = authEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService)
-            throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers(
-                                "/api/auth/**", "/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**")
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/public/**")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**")
-                        .hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/**")
-                        .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/**")
-                        .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/**")
-                        .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/**")
-                        .hasRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                        .permitAll()
+                        .requestMatchers("/h2-console/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .userDetailsService(userDetailsService)
-                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+                .exceptionHandling(
+                        ex -> ex.authenticationEntryPoint(authEntryPoint).accessDeniedHandler(accessDeniedHandler));
 
         return http.build();
     }
 
     @Bean
-    public OpenApiCustomizer openApiCustomizer() {
-        return openApi -> {
-            SecurityScheme bearerScheme = new SecurityScheme()
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT")
-                    .description("Enter JWT token");
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
+            if (realmAccess == null) {
+                return Collections.emptyList();
+            }
 
-            openApi.getComponents().addSecuritySchemes("bearerAuth", bearerScheme);
-            openApi.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
-        };
+            Object rolesObj = realmAccess.get("roles");
+            if (!(rolesObj instanceof Collection<?> rawRoles)) {
+                return Collections.emptyList();
+            }
+
+            return rawRoles.stream()
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .filter(role -> !role.startsWith("default-")
+                            && !role.equals("offline_access")
+                            && !role.equals("uma_authorization")
+                            && !role.equals("dummy"))
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                    .collect(Collectors.toList());
+        });
+        return converter;
     }
 }

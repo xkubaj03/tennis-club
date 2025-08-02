@@ -3,12 +3,11 @@ server:
 
 app:
   init-data: false
-  jwtSecret: "myVerySecretKeyThatIsAtLeast256BitsLongForHMACSecurityPurposes="
-  jwtExpirationMs: 86400000  # 24 hours
 
 spring:
   application:
     name: Tennis Club
+
   profiles:
     active: dev
 

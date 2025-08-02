@@ -12,6 +12,12 @@ spring:
     username: sa
     password:
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8888/realms/myRealm
+
   jpa:
     hibernate:
       ddl-auto: none

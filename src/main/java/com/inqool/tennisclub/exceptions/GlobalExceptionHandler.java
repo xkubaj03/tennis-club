@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -63,6 +64,14 @@ public class GlobalExceptionHandler {
         body.put("error", "Type Mismatch");
         body.put("message", "Invalid value for parameter: " + ex.getName());
         return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<Object> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Forbidden");
+        body.put("message", "Access Denied");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
     @ExceptionHandler(Exception.class)
