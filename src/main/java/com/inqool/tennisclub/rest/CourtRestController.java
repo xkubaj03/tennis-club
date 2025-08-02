@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
@@ -14,11 +15,13 @@ import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tags(value = @Tag(name = "Court API"))
 @RestController
 @RequestMapping("/api/court")
+@SecurityRequirement(name = "bearerAuth")
 public class CourtRestController {
 
     private final CourtFacade courtFacade;
@@ -34,6 +37,7 @@ public class CourtRestController {
         @ApiResponse(responseCode = "400", description = "Invalid court data provided", content = @Content)
     })
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CourtDto> create(@RequestBody @Valid CreateCourtDto dto) {
         CourtDto created = courtFacade.create(dto);
         return ResponseEntity.created(URI.create("/court/" + created.getId())).body(created);
@@ -42,6 +46,7 @@ public class CourtRestController {
     @Operation(summary = "Get all courts")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "List of courts retrieved successfully")})
     @GetMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<CourtDto>> findAll() {
         return ResponseEntity.ok(courtFacade.findAll());
     }
@@ -52,6 +57,7 @@ public class CourtRestController {
         @ApiResponse(responseCode = "404", description = "Court not found", content = @Content)
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CourtDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(courtFacade.findById(id));
     }
@@ -63,6 +69,7 @@ public class CourtRestController {
         @ApiResponse(responseCode = "404", description = "Court not found", content = @Content)
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CourtDto> update(@PathVariable Long id, @RequestBody @Valid CreateCourtDto dto) {
         CourtDto updated = courtFacade.update(id, dto);
         return ResponseEntity.ok(updated);
@@ -74,6 +81,7 @@ public class CourtRestController {
         @ApiResponse(responseCode = "404", description = "Court not found", content = @Content)
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         courtFacade.deleteById(id);
         return ResponseEntity.noContent().build();

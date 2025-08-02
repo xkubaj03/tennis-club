@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.Valid;
@@ -14,11 +15,13 @@ import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tags(value = @Tag(name = "Reservation API"))
 @RestController
 @RequestMapping("/api/reservation")
+@SecurityRequirement(name = "bearerAuth")
 public class ReservationRestController {
     private final ReservationFacade reservationFacade;
 
@@ -33,6 +36,7 @@ public class ReservationRestController {
         @ApiResponse(responseCode = "400", description = "Invalid Reservation data provided", content = @Content)
     })
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ReservationDto> create(@RequestBody @Valid CreateReservationDto dto) {
         ReservationDto created = reservationFacade.create(dto);
         return ResponseEntity.created(URI.create("/reservation/" + created.getId()))
@@ -42,6 +46,7 @@ public class ReservationRestController {
     @Operation(summary = "Get all Reservations")
     @ApiResponses({@ApiResponse(responseCode = "200", description = "List of Reservations retrieved successfully")})
     @GetMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ReservationDto>> findAll() {
         return ResponseEntity.ok(reservationFacade.findAll());
     }
@@ -52,6 +57,7 @@ public class ReservationRestController {
         @ApiResponse(responseCode = "404", description = "Court number not found", content = @Content)
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ReservationDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(reservationFacade.findById(id));
     }
@@ -62,6 +68,7 @@ public class ReservationRestController {
         @ApiResponse(responseCode = "404", description = "Court number not found", content = @Content)
     })
     @GetMapping("/court/{number}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ReservationDto>> findByCourt(@PathVariable Integer number) {
         return ResponseEntity.ok(reservationFacade.findByCourt(number));
     }
@@ -72,6 +79,7 @@ public class ReservationRestController {
         @ApiResponse(responseCode = "404", description = "Phone number not found", content = @Content)
     })
     @GetMapping("/phone/{number}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ReservationDto>> findByPhone(
             @PathVariable String number, @RequestParam(required = false, defaultValue = "false") boolean futureOnly) {
         return ResponseEntity.ok(reservationFacade.findByPhone(number, futureOnly));
@@ -84,6 +92,7 @@ public class ReservationRestController {
         @ApiResponse(responseCode = "404", description = "Reservation not found", content = @Content)
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ReservationDto> update(@PathVariable Long id, @RequestBody @Valid CreateReservationDto dto) {
         ReservationDto updated = reservationFacade.update(id, dto);
         return ResponseEntity.ok(updated);
@@ -95,6 +104,7 @@ public class ReservationRestController {
         @ApiResponse(responseCode = "404", description = "Reservation not found", content = @Content)
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reservationFacade.deleteById(id);
         return ResponseEntity.noContent().build();
