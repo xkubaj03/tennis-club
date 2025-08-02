@@ -8,6 +8,12 @@ spring:
   application:
     name: Tennis Club
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8888/realms/myRealm
+          
   profiles:
     active: dev
 
